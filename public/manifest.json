@@ -1,0 +1,21 @@
+{
+  "name": "Metodo RESET FIBRO™",
+  "short_name": "Reset Fibro",
+  "description": "App per il tracciamento rapido per chi soffre di Fibromialgia.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FCFAFA",
+  "theme_color": "#5C3877",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
