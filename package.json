@@ -1,9 +1,9 @@
 {
-  "name": "dash-over-50-method",
+  "name": "app-fibroreset",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://app.dashover50.com",
+  "homepage": "https://app-fibroreset.vercel.app",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

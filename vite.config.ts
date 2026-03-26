@@ -9,9 +9,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'DASH Over 50 METHOD',
-        short_name: 'DASH',
-        description: 'AI-powered health tracking for over 50',
+        name: 'Metodo RESET FIBRO™',
+        short_name: 'Reset Fibro',
+        description: 'App di sollievo per Fibromialgia',
         theme_color: '#1B847C',
         icons: [
           {
