@@ -74,8 +74,8 @@ const Dashboard: React.FC<{ setScreen: (screen: string) => void }> = ({ setScree
     setTodayScore(todayEntries.length > 0 ? todayEntries[0] : null);
 
     // Load meds
-    const savedMeds = getLocalStorageItem<Medication[]>('dash_medications_v2', []);
-    const savedTaken = getLocalStorageItem<TakenRecordsMap>('dash_medsTaken_v2', {});
+    const savedMeds = getLocalStorageItem<Medication[]>('fibro_medications_v2', []);
+    const savedTaken = getLocalStorageItem<TakenRecordsMap>('fibro_medsTaken_v2', {});
 
     if (savedMeds.length > 0) {
       const todaysTaken = savedTaken[todayKey] || [];

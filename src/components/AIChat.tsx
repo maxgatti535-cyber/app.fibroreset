@@ -194,7 +194,7 @@ const AICoach: React.FC<AICoachProps> = ({ initialPrompt, clearInitialPrompt }) 
         mainGoal: getLocalStorageItem('profile.mainGoal', ''),
         otherSymptoms: getLocalStorageItem('profile.otherSymptoms', ''),
       };
-      const medications: any[] = getLocalStorageItem('dash_medications_v2', []);
+      const medications: any[] = getLocalStorageItem('fibro_medications_v2', []);
 
       let contextString = `\n\n--- PROFILO PAZIENTE & CONTESTO ---\n`;
       if (profile.name) contextString += `Nome: ${profile.name}\n`;

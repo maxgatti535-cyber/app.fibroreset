@@ -90,9 +90,9 @@ const Medications: React.FC = () => {
   const notificationTimersRef = useRef<number[]>([]);
 
   useEffect(() => {
-    setMedications(getLocalStorageItem<Medication[]>('dash_medications_v2', []));
-    setTakenRecords(getLocalStorageItem('dash_medsTaken_v2', {}));
-    setSnoozeRecords(getLocalStorageItem('dash_medsSnoozed_v2', {}));
+    setMedications(getLocalStorageItem<Medication[]>('fibro_medications_v2', []));
+    setTakenRecords(getLocalStorageItem('fibro_medsTaken_v2', {}));
+    setSnoozeRecords(getLocalStorageItem('fibro_medsSnoozed_v2', {}));
     setMedNotificationsOn(getLocalStorageItem('notifications.medNotificationsOn', false));
     if ('Notification' in window) {
       setNotificationPermission(Notification.permission);
@@ -111,7 +111,7 @@ const Medications: React.FC = () => {
     else newMeds.push(med);
     
     setMedications(newMeds);
-    setLocalStorageItem('dash_medications_v2', newMeds);
+    setLocalStorageItem('fibro_medications_v2', newMeds);
     setShowForm(false);
     setEditingMed(null);
   };
@@ -120,7 +120,7 @@ const Medications: React.FC = () => {
     if (window.confirm("Sei sicura di voler eliminare questo farmaco?")) {
         const newMeds = medications.filter(m => m.id !== medId);
         setMedications(newMeds);
-        setLocalStorageItem('dash_medications_v2', newMeds);
+        setLocalStorageItem('fibro_medications_v2', newMeds);
         setShowForm(false);
         setEditingMed(null);
     }
@@ -206,7 +206,7 @@ const Medications: React.FC = () => {
       if (notificationTime > now) {
         const delay = notificationTime.getTime() - now.getTime();
         const timerId = window.setTimeout(() => {
-          const currentTaken = getLocalStorageItem<{ [key: string]: { medId: string; time: string }[] }>('dash_medsTaken_v2', {});
+          const currentTaken = getLocalStorageItem<{ [key: string]: { medId: string; time: string }[] }>('fibro_medsTaken_v2', {});
           const currentDayKey = getDayKey(new Date());
           const isNowTaken = (currentTaken[currentDayKey] || []).some(t => t.medId === instance.medId && t.time === instance.originalTime);
           
@@ -268,7 +268,7 @@ const Medications: React.FC = () => {
     
     newTaken[todayKey] = dayTaken;
     setTakenRecords(newTaken);
-    setLocalStorageItem('dash_medsTaken_v2', newTaken);
+    setLocalStorageItem('fibro_medsTaken_v2', newTaken);
   };
   
   const handleSnooze = (instance: DoseInstance, minutes: number) => {
@@ -282,7 +282,7 @@ const Medications: React.FC = () => {
 
       newSnoozed[todayKey] = daySnoozed;
       setSnoozeRecords(newSnoozed);
-      setLocalStorageItem('dash_medsSnoozed_v2', newSnoozed);
+      setLocalStorageItem('fibro_medsSnoozed_v2', newSnoozed);
   };
 
   const AdherenceSummary = useMemo(() => {
