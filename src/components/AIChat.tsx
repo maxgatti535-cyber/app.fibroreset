@@ -16,6 +16,16 @@ const quickActionMap = {
 };
 type QuickActionKey = keyof typeof quickActionMap;
 
+interface ScoreEntry {
+  id: string;
+  date: string;
+  score: number;
+  energia: number;
+  dolore: number;
+  modalita: string;
+  microVictory?: string;
+}
+
 const AICoach: React.FC<AICoachProps> = ({ initialPrompt, clearInitialPrompt }) => {
   const [messages, setMessages] = useState([{ text: "Ciao! Sono il tuo Coach del Metodo RESET FIBRO. Come ti senti oggi?", sender: 'ai' }]);
   const [input, setInput] = useState('');
@@ -195,6 +205,7 @@ const AICoach: React.FC<AICoachProps> = ({ initialPrompt, clearInitialPrompt }) 
         otherSymptoms: getLocalStorageItem('profile.otherSymptoms', ''),
       };
       const medications: any[] = getLocalStorageItem('fibro_medications_v2', []);
+      const scoreEntries: ScoreEntry[] = getLocalStorageItem('fibro_score_entries', []);
 
       let contextString = `\n\n--- PROFILO PAZIENTE & CONTESTO ---\n`;
       if (profile.name) contextString += `Nome: ${profile.name}\n`;
@@ -210,9 +221,16 @@ const AICoach: React.FC<AICoachProps> = ({ initialPrompt, clearInitialPrompt }) 
         medications.forEach(med => {
           contextString += `- ${med.name} ${med.dose}${med.unit}\n`;
         });
-      } else {
-        contextString += `\nFarmaci: Nessuno aggiunto.\n`;
       }
+
+      if (scoreEntries.length > 0) {
+        contextString += `\nUltimi 3 SCORE registrati:\n`;
+        scoreEntries.slice(0, 3).forEach(entry => {
+          contextString += `- Data: ${entry.date}, Score: ${entry.score}/15 (${entry.modalita}), Energia: ${entry.energia}/5, Dolore: ${entry.dolore}/5\n`;
+          if (entry.microVictory) contextString += `  Micro-vittoria: ${entry.microVictory}\n`;
+        });
+      }
+      
       contextString += `----------------------------\n`;
 
       const SHORT_SYSTEM_PROMPT = `IDENTITÀ E RUOLO
@@ -223,20 +241,26 @@ Non sei un medico. Ti limiti a consigliare strategie educative (Pacing, Respiraz
 ALIMENTAZIONE: Consiglia ricette facili e antinfiammatorie (es. Zuppa di Zucca, Porridge, Salmone). Enfatizza le strategie salva-energia (verdure surgelate, legumi precotti).
 FLARE RESET: Quando l'utente ha un "Flare" (crisi da sovraccarico, sbalzi meteo, stress, ciclo, ecc.), guidalo passo passo nei 4 step del Kit: (1) Calma/Sicurezza (es. Respiro, calore), (2) Riduzione stimoli (es. Buio, riposo), (3) Idratazione/Nutrimento leggero, (4) Azione passiva (es. Riposo, scrittura veloce nel diario).
 
+ANALISI DEI DATI
+Usa lo storico degli SCORE per personalizzare le risposte. Se lo score è in calo, suggerisci più Riposo. Se è in Espansione, incoraggia piccoli passi di movimento gentile.
+
 STILE DI COMUNICAZIONE
 Rispondi sempre e SOLO in ITALIANO. Empatico, validante e rassicurante. Messaggi brevi.`;
 
-      // Forced sync to Vercel - ensuring variables are defined
-      const fullPrompt = messageText;
-      const coachConfigPrompt = SHORT_SYSTEM_PROMPT + "\n\n" + contextString;
+      // Prepare history for Gemini API
+      const history = messages.slice(1).map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.text }]
+      }));
 
       // Use our secure Vercel proxy instead of direct client-side call
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt: fullPrompt,
-          system: coachConfigPrompt
+          prompt: messageText,
+          system: SHORT_SYSTEM_PROMPT + "\n\n" + contextString,
+          history: history
         })
       });
 
