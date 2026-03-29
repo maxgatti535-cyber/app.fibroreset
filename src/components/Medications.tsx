@@ -232,26 +232,34 @@ const Medications: React.FC = () => {
   }, [todaysInstances, notificationPermission, scheduleNotifications]);
 
   const handleRequestPermission = async () => {
-    let newStatus = medNotificationsOn;
-    
+    // Check for iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    const isStandalone = (window.navigator as any).standalone || window.matchMedia('(display-mode: standalone)').matches;
+
     if (!medNotificationsOn) {
-        if (!('Notification' in window)) {
-           alert('Il tuo browser non supporta le notifiche desktop.');
-           return;
-        }
-        const permission = await Notification.requestPermission();
-        setNotificationPermission(permission);
-        if (permission === 'granted') {
-           setLocalStorageItem('notifications.medNotificationsOn', true);
-           setMedNotificationsOn(true);
-           playAlarmSound(); // Test sound
-           alert("Notifiche e suono attivati con successo!");
+      if (!('Notification' in window)) {
+        if (isIOS && !isStandalone) {
+          alert("Su iPhone/iPad è obbligatorio aggiungere l'app alla Home Screen per attivare gli allarmi:\n1. Clicca l'icona 'Condividi' (il quadratino con la freccia)\n2. Seleziona 'Aggiungi alla schermata Home'");
         } else {
-           alert("Devi concedere i permessi dal browser per ricevere gli allarmi.");
+          alert('Il tuo browser attuale non supporta le notifiche. Prova con Chrome.');
         }
+        return;
+      }
+      
+      const permission = await Notification.requestPermission();
+      setNotificationPermission(permission);
+      
+      if (permission === 'granted') {
+        setLocalStorageItem('notifications.medNotificationsOn', true);
+        setMedNotificationsOn(true);
+        playAlarmSound(); // Test sound
+        alert("Perfetto! Notifiche e segnale acustico attivati.");
+      } else {
+        alert("Attenzione: I permessi sono stati negati. Per ricevere gli allarmi, vai nelle impostazioni del browser/sito e attiva le notifiche per questo sito.");
+      }
     } else {
-        setLocalStorageItem('notifications.medNotificationsOn', false);
-        setMedNotificationsOn(false);
+      setLocalStorageItem('notifications.medNotificationsOn', false);
+      setMedNotificationsOn(false);
     }
   };
 
