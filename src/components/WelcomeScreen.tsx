@@ -29,7 +29,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
     <div className="min-h-screen flex flex-col justify-center items-center p-4 relative overflow-hidden">
       {/* Decorative orbs */}
       <div className="orb orb-purple w-48 h-48 -top-20 -right-20 opacity-25"></div>
-      <div className="orb orb-teal w-36 h-36 bottom-20 -left-16 opacity-20" style={{ animationDelay: '4s' }}></div>
+      <div className="orb orb-azure w-36 h-36 bottom-20 -left-16 opacity-20" style={{ animationDelay: '4s' }}></div>
       <div className="orb orb-pink w-28 h-28 bottom-40 right-10 opacity-15" style={{ animationDelay: '8s' }}></div>
 
       <div className="glass-panel-strong p-7 rounded-3xl premium-shadow-elevated w-full max-w-md text-center relative z-10 animate-scale-in gradient-border">

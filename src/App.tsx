@@ -196,7 +196,7 @@ const App: React.FC = () => {
           <div className="space-y-5 pb-8 relative">
             {/* Decorative floating orbs */}
             <div className="orb orb-purple w-32 h-32 -top-10 -right-10 opacity-20" style={{ animationDelay: '0s' }}></div>
-            <div className="orb orb-teal w-24 h-24 top-40 -left-12 opacity-15" style={{ animationDelay: '4s' }}></div>
+            <div className="orb orb-azure w-24 h-24 top-40 -left-12 opacity-15" style={{ animationDelay: '4s' }}></div>
 
             {/* Greeting Section */}
             <div className="px-1 pt-1 pb-2 animate-fade-in">
