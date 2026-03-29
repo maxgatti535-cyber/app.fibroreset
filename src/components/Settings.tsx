@@ -234,13 +234,13 @@ const Settings: React.FC<{ setScreen: (screen: string) => void }> = ({ setScreen
     <div className="space-y-6 pb-12 fade-in">
       <SettingsCard title="Il tuo Profilo Fibro">
         <SettingsRow label="Nome">
-          <input type="text" value={settings.profile.name} onChange={e => handleSettingChange('profile.name', e.target.value)} className="w-full sm:w-64 p-3 rounded-xl border border-border bg-slate-50 text-[15px] focus:ring-2 focus:ring-brandPrimary outline-none text-right" />
+          <input type="text" value={settings.profile.name} onChange={e => handleSettingChange('profile.name', e.target.value)} className="w-full sm:w-64 p-3 rounded-xl border border-border bg-slate-50 text-[15px] focus:ring-2 focus:ring-brandPrimary outline-none text-left" />
         </SettingsRow>
         <SettingsRow label="Età">
-          <input type="number" value={settings.profile.age} onChange={e => handleSettingChange('profile.age', e.target.value ? parseInt(e.target.value, 10) : '')} className="w-full sm:w-32 p-3 rounded-xl border border-border bg-slate-50 text-[15px] focus:ring-2 focus:ring-brandPrimary outline-none text-right" />
+          <input type="number" value={settings.profile.age} onChange={e => handleSettingChange('profile.age', e.target.value ? parseInt(e.target.value, 10) : '')} className="w-full sm:w-32 p-3 rounded-xl border border-border bg-slate-50 text-[15px] focus:ring-2 focus:ring-brandPrimary outline-none text-left" />
         </SettingsRow>
         <SettingsRow label="Sesso">
-          <select value={settings.profile.sex} onChange={e => handleSettingChange('profile.sex', e.target.value)} className="w-full sm:w-48 p-3 rounded-xl border border-border bg-slate-50 text-[15px] focus:ring-2 focus:ring-brandPrimary outline-none text-right">
+          <select value={settings.profile.sex} onChange={e => handleSettingChange('profile.sex', e.target.value)} className="w-full sm:w-48 p-3 rounded-xl border border-border bg-slate-50 text-[15px] focus:ring-2 focus:ring-brandPrimary outline-none text-left">
             <option value="">Seleziona...</option>
             <option value="female">Donna</option>
             <option value="male">Uomo</option>
@@ -248,7 +248,7 @@ const Settings: React.FC<{ setScreen: (screen: string) => void }> = ({ setScreen
           </select>
         </SettingsRow>
         <SettingsRow label="Stato Diagnosi">
-          <select value={settings.profile.diagnosisStatus} onChange={e => handleSettingChange('profile.diagnosisStatus', e.target.value)} className="w-full sm:w-64 p-3 rounded-xl border border-border bg-slate-50 text-[15px] focus:ring-2 focus:ring-brandPrimary outline-none text-right">
+          <select value={settings.profile.diagnosisStatus} onChange={e => handleSettingChange('profile.diagnosisStatus', e.target.value)} className="w-full sm:w-72 p-3 rounded-xl border border-border bg-slate-50 text-[15px] focus:ring-2 focus:ring-brandPrimary outline-none text-left">
              <option value="">Seleziona...</option>
              <option value="diagnosed_years">Diagnosticata da anni</option>
              <option value="diagnosed_recent">Diagnosticata di recente</option>
@@ -257,7 +257,7 @@ const Settings: React.FC<{ setScreen: (screen: string) => void }> = ({ setScreen
           </select>
         </SettingsRow>
         <SettingsRow label="Livello di Stanchezza/Dolore">
-          <select value={settings.profile.painLevel} onChange={e => handleSettingChange('profile.painLevel', e.target.value)} className="w-full sm:w-64 p-3 rounded-xl border border-border bg-slate-50 text-[15px] focus:ring-2 focus:ring-brandPrimary outline-none text-right">
+          <select value={settings.profile.painLevel} onChange={e => handleSettingChange('profile.painLevel', e.target.value)} className="w-full sm:w-72 p-3 rounded-xl border border-border bg-slate-50 text-[15px] focus:ring-2 focus:ring-brandPrimary outline-none text-left">
              <option value="">Seleziona...</option>
              <option value="mild">1-3 (Lieve, gestibile)</option>
              <option value="moderate">4-6 (Moderato, molto fastidioso)</option>
