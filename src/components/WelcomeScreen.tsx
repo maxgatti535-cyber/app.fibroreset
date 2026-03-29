@@ -4,34 +4,6 @@ interface WelcomeScreenProps {
   onComplete: () => void;
 }
 
-const subscribeToMailingList = async (name: string, email: string): Promise<boolean> => {
-  const endpointUrl = 'https://your-email-service.com/api/subscribe';
-  const apiKey = 'YOUR_API_KEY_HERE';
-
-  const payload = {
-    email_address: email,
-    status: 'subscribed',
-    merge_fields: {
-      FNAME: name.split(' ')[0] || '',
-      LNAME: name.split(' ').slice(1).join(' ') || '',
-    },
-  };
-
-  console.log('--- SIMULATING EMAIL SUBSCRIPTION ---');
-  console.log('Endpoint:', endpointUrl);
-  console.log('Payload:', JSON.stringify(payload, null, 2));
-
-  try {
-    await new Promise(resolve => setTimeout(resolve, 750));
-    console.log('--- SIMULATION SUCCESSFUL ---');
-    return true;
-  } catch (error) {
-    console.error('Network or other error during email subscription:', error);
-    return true;
-  }
-};
-
-
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -42,12 +14,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
     e.preventDefault();
     if (name && email && consentChecked && !isSubmitting) {
       setIsSubmitting(true);
-      
       localStorage.setItem('profile.name', JSON.stringify(name));
       localStorage.setItem('profile.email', JSON.stringify(email));
-
-      await subscribeToMailingList(name, email);
-      
       setIsSubmitting(false);
       onComplete();
     }

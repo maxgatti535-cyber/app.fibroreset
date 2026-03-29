@@ -126,7 +126,7 @@ const AICoach: React.FC<AICoachProps> = ({ initialPrompt, clearInitialPrompt }) 
 
   const toggleListening = () => {
     if (!recognitionRef.current) {
-      alert("Speech recognition is not supported in this browser.");
+      alert("Il riconoscimento vocale non è supportato in questo browser.");
       return;
     }
 
@@ -255,7 +255,7 @@ Rispondi sempre e SOLO in ITALIANO. Empatico, validante e rassicurante. Messaggi
       const responseText = data.answer;
 
       if (!responseText) {
-        throw new Error("Empty response from Coach.");
+        throw new Error("Nessuna risposta ricevuta dal Coach.");
       }
 
       const aiMessage = { text: responseText, sender: 'ai' };
@@ -263,7 +263,7 @@ Rispondi sempre e SOLO in ITALIANO. Empatico, validante e rassicurante. Messaggi
       success = true;
     } catch (error) {
       console.error('Gemini API error:', error);
-      const errorMsg = error instanceof Error ? error.message : "Internal error";
+      const errorMsg = error instanceof Error ? error.message : "Errore interno";
       const errorMessage = { text: `⚠️ Coach: ${errorMsg}`, sender: 'ai' };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
@@ -317,7 +317,7 @@ Rispondi sempre e SOLO in ITALIANO. Empatico, validante e rassicurante. Messaggi
                   title="Read aloud"
                 >
                   {isSpeaking ? <VolumeX size={18} className="animate-pulse" /> : <Volume2 size={18} />}
-                  <span>{isSpeaking ? 'Stop Listening' : 'Listen to Coach'}</span>
+                  <span>{isSpeaking ? 'Ferma Ascolto' : 'Ascolta Coach'}</span>
                 </button>
               )}
             </div>

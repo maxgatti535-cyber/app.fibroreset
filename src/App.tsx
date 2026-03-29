@@ -143,6 +143,7 @@ const App: React.FC = () => {
     { id: 'ai_coach', title: 'Coach Fibro', description: 'Supporto e risposte h24', Icon: CoachIcon, component: <AICoach initialPrompt={initialAiPrompt} clearInitialPrompt={() => setInitialAiPrompt('')} /> },
     { id: 'bp', title: 'Il Mio SCORE', description: 'Calcola la tua energia (1-15)', Icon: BPIcon, component: <BloodPressure /> },
     { id: 'meds', title: 'Farmaci & Integratori', description: 'La tua routine quotidiana', Icon: MedsIcon, component: <Medications /> },
+    { id: 'reminders', title: 'Promemoria Farmaci', description: 'Avvisi e notifiche orario', Icon: RemindersIcon, component: <Reminders /> },
     { id: 'meals', title: 'Ricettario', description: 'Ricette facili e salva-energia', Icon: MealIcon, component: <MealPlan onNavigateToCoach={handleNavigateToCoach} /> },
     { id: 'education', title: 'Kit Flare Reset', description: 'Protocolli per 20 emergenze', Icon: EducationIcon, component: <Education onNavigateToCoach={handleNavigateToCoach} /> },
     { id: 'exercise', title: 'Movimento Gentile', description: 'Esercizi per non affaticarti', Icon: ExerciseIcon, component: <Exercise onNavigateToCoach={handleNavigateToCoach} /> },
@@ -154,9 +155,9 @@ const App: React.FC = () => {
 
   const screenTitleMap: { [key: string]: string | undefined } = {
     ...Object.fromEntries(menuItems.map(item => [item.id, item.title])),
-    settings: 'Settings',
-    privacy: 'Privacy Policy',
-    terms: 'Terms of Service',
+    settings: 'Impostazioni',
+    privacy: 'Privacy & Cookie',
+    terms: 'Termini di Servizio',
   };
   const screenTitle = screenTitleMap[screen];
 
@@ -269,13 +270,13 @@ const App: React.FC = () => {
       // Final Fallback if screen ID is unknown
       return (
         <div className="text-center p-10">
-          <p className="text-textSecondary">Screen not found.</p>
-          <button onClick={() => setScreen('home')} className="text-brandPrimary underline mt-4 font-bold">Go Home</button>
+          <p className="text-textSecondary">Schermata non trovata.</p>
+          <button onClick={() => setScreen('home')} className="text-brandPrimary underline mt-4 font-bold">Torna alla Home</button>
         </div>
       );
     } catch (error) {
       console.error("Error rendering screen:", error);
-      return <div className="p-4 text-red-600">Error rendering this screen. Please return Home.</div>;
+      return <div className="p-4 text-red-600">Errore nel caricamento della schermata. Per favore torna alla Home.</div>;
     }
   };
 
