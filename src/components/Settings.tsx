@@ -87,6 +87,33 @@ const Settings: React.FC<{ setScreen: (screen: string) => void }> = ({ setScreen
   const [resetInput, setResetInput] = useState('');
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
   const [isNotificationApiSupported, setIsNotificationApiSupported] = useState(true);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeInstall = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    
+    if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone) {
+      setIsInstalled(true);
+    }
+
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+      setIsInstalled(true);
+    }
+  };
 
   useEffect(() => {
     const notificationsSupported = 'Notification' in window;
@@ -238,6 +265,33 @@ const Settings: React.FC<{ setScreen: (screen: string) => void }> = ({ setScreen
              <option value="extreme">9-10 (Estremo, bloccante)</option>
           </select>
         </SettingsRow>
+      </SettingsCard>
+
+      <SettingsCard title="App e Installazione">
+        {isInstalled ? (
+           <div className="bg-green-50 p-4 rounded-xl border border-green-100 flex items-center gap-3">
+             <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white">✓</div>
+             <p className="text-sm font-bold text-green-800">L'app è già installata sul tuo dispositivo.</p>
+           </div>
+        ) : (
+          <div className="space-y-4">
+            <p className="text-sm text-textSecondary leading-relaxed">Installa l'app sulla tua Home Screen per un accesso rapido e per far funzionare correttamente gli allarmi dei farmaci.</p>
+            
+            {deferredPrompt ? (
+               <button onClick={handleInstallClick} className="w-full bg-brandPrimary text-white font-bold py-4 rounded-xl shadow-lg hover:bg-brandPrimaryDark transition-all">
+                 Installa Ora sul Telefono
+               </button>
+            ) : (
+              <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                <p className="text-sm font-bold text-blue-800 mb-2">Come installare:</p>
+                <ul className="text-xs text-blue-700 space-y-1 ml-4 list-disc">
+                  <li><b>Su iPhone/iPad:</b> Clicca l'icona "Condividi" in Safari e poi "Aggiungi alla schermata Home".</li>
+                  <li><b>Su Android:</b> Clicca i tre puntini in alto a destra in Chrome e seleziona "Installa applicazione".</li>
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
       </SettingsCard>
 
       <SettingsCard title="Display e Accessibilità">
