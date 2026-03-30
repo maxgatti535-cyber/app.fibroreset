@@ -44,7 +44,7 @@ export default async function handler(req, res) {
 
         apiKey = apiKey.trim();
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
 
         const chat = model.startChat({
             history: history || [],
