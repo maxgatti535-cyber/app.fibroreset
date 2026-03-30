@@ -2,11 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function handler(req, res) {
     const allowedOrigins = [
-        'https://app.dashover50.com',
-        'https://app-fibroreset.vercel.app',
-        'https://maxgatti535-cyber.github.io',
-        'http://localhost:5173', 
-        'http://127.0.0.1:5173'
+        'https://app-fibroreset.vercel.app'
     ];
 
     const origin = req.headers.origin;
