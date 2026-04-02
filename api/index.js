@@ -2,7 +2,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function handler(req, res) {
     const allowedOrigins = [
-        'https://app-fibroreset.vercel.app'
+        'https://app-fibroreset.vercel.app',
+        'http://localhost:5173',
+        'http://localhost:5176'
     ];
 
     const origin = req.headers.origin;
@@ -40,13 +42,20 @@ export default async function handler(req, res) {
 
         apiKey = apiKey.trim();
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        
+        // Use standard model name without explicit API version to let SDK handle it
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+        // Point 3: SDK is latest. We use history-based grounding to bypass field errors
+        const systemPrompt = system || `Sei l'AI Coach ufficiale del "Metodo RESET FIBRO™" di Equilibria Reset. Rispondi sempre in ITALIANO.`;
+        const groundedHistory = [
+            { role: 'user', parts: [{ text: `ISTRUZIONI DI SISTEMA: ${systemPrompt}` }] },
+            { role: 'model', parts: [{ text: 'Certamente. Ho compreso perfettamente il mio ruolo di AI Coach ufficiale del Metodo RESET FIBRO™.' }] },
+            ...(history || [])
+        ];
 
         const chat = model.startChat({
-            history: history || [],
-            systemInstruction: {
-                parts: [{ text: system || `Sei l'AI Coach ufficiale del "Metodo RESET FIBRO™" di Equilibria Reset.` }]
-            },
+            history: groundedHistory,
         });
 
         const result = await chat.sendMessage(prompt);
@@ -55,6 +64,15 @@ export default async function handler(req, res) {
         res.status(200).json({ answer: text });
     } catch (e) {
         console.error("Gemini Error:", e);
+        
+        // Handle Rate Limit specifically
+        if (e.message?.includes('429') || e.message?.includes('Too Many Requests')) {
+            return res.status(429).json({ 
+                error: "Il Coach sta riflettendo... troppe richieste simultanee. Riprovo tra un istante.",
+                retryAfter: 5
+            });
+        }
+
         res.status(500).json({ 
             error: `Coach service error: ${e.message || "Unknown error"}.` 
         });
