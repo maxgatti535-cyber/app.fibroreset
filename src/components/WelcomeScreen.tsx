@@ -16,6 +16,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
       setIsSubmitting(true);
       localStorage.setItem('profile.name', JSON.stringify(name));
       localStorage.setItem('profile.email', JSON.stringify(email));
+      // Save trial start date only if not already set (avoid resetting on re-registration)
+      if (!localStorage.getItem('trial.startDate')) {
+        localStorage.setItem('trial.startDate', JSON.stringify(new Date().toISOString()));
+      }
       setIsSubmitting(false);
       onComplete();
     }

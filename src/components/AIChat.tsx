@@ -186,11 +186,15 @@ const AICoach: React.FC<AICoachProps> = ({ initialPrompt, clearInitialPrompt }) 
     inputRef.current?.focus();
   };
 
-  const sendMessage = async (messageText: string): Promise<boolean> => {
+  const sendMessage = async (messageText: string, retryCount = 0): Promise<boolean> => {
     if (!messageText.trim()) return true;
 
-    const userMessage = { text: messageText, sender: 'user' };
-    setMessages(prev => [...prev, userMessage]);
+    // Only add to messages if it's the first attempt
+    if (retryCount === 0) {
+      const userMessage = { text: messageText, sender: 'user' };
+      setMessages(prev => [...prev, userMessage]);
+    }
+    
     setLoading(true);
     let success = false;
 
@@ -247,20 +251,21 @@ Usa lo storico degli SCORE per personalizzare le risposte. Se lo score è in cal
 STILE DI COMUNICAZIONE
 Rispondi sempre e SOLO in ITALIANO. Empatico, validante e rassicurante. Messaggi brevi.`;
 
-      // Prepare history for Gemini API
-      const history = messages.slice(1).map(msg => ({
-        role: msg.sender === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.text }]
-      }));
+      // Filter out messages that might be error notifications before sending history
+      const validHistory = messages
+        .filter(m => !m.text.startsWith('⚠️') && !m.text.includes('Il Coach sta riflettendo'))
+        .slice(1).map(msg => ({
+          role: msg.sender === 'user' ? 'user' : 'model',
+          parts: [{ text: msg.text }]
+        }));
 
-      // Use our secure Vercel proxy instead of direct client-side call
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prompt: messageText,
           system: SHORT_SYSTEM_PROMPT + "\n\n" + contextString,
-          history: history
+          history: validHistory
         })
       });
 
@@ -269,30 +274,31 @@ Rispondi sempre e SOLO in ITALIANO. Empatico, validante e rassicurante. Messaggi
       try {
         data = JSON.parse(rawText);
       } catch (e) {
-        throw new Error(`Risposta non valida dal server: ${rawText.substring(0, 100)}`);
+        throw new Error(`Risposta non valida: ${rawText.substring(0, 100)}`);
+      }
+
+      if (response.status === 429 && retryCount < 2) {
+        // Automatic retry for rate limits
+        console.warn(`Rate limit hit, retry attempt ${retryCount + 1}`);
+        await new Promise(resolve => setTimeout(resolve, 3000)); // Wait 3s
+        return sendMessage(messageText, retryCount + 1);
       }
 
       if (!response.ok) {
-        throw new Error(data.error || `Server error: ${response.status}`);
+        throw new Error(data.error || `Errore: ${response.status}`);
       }
 
       const responseText = data.answer;
+      if (!responseText) throw new Error("Nessuna risposta ricevuta.");
 
-      if (!responseText) {
-        throw new Error("Nessuna risposta ricevuta dal Coach.");
-      }
-
-      const aiMessage = { text: responseText, sender: 'ai' };
-      setMessages(prev => [...prev, aiMessage]);
+      setMessages(prev => [...prev, { text: responseText, sender: 'ai' }]);
       success = true;
     } catch (error) {
-      console.error('Gemini API error:', error);
+      console.error('Coaching Error:', error);
       const errorMsg = error instanceof Error ? error.message : "Errore interno";
-      const errorMessage = { text: `⚠️ Coach: ${errorMsg}`, sender: 'ai' };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages(prev => [...prev, { text: `⚠️ ${errorMsg}`, sender: 'ai' }]);
     } finally {
       setLoading(false);
-      // Ensure loading flag is cleared even after unexpected errors
       setIsListening(false);
       setIsSpeaking(false);
     }

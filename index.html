@@ -7,12 +7,19 @@
     <meta name="theme-color" content="#7C4DFF" />
     <title>Metodo RESET FIBRO™</title>
     <link rel="manifest" href="/manifest.json" />
-    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <!-- iOS home screen icon -->
+    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png" />
+    <!-- iOS PWA meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Reset Fibro" />
+    <!-- Android / general -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
   </head>
   <body>
     <div id="root"></div>
-   <script type="module" src="./src/index.tsx"></script>
-
-
+    <script type="module" src="./src/index.tsx"></script>
   </body>
 </html>

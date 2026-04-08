@@ -30,6 +30,7 @@ const ProfileSetupScreen = lazy(() => import('./components/ProfileSetupScreen'))
 const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./components/TermsOfService'));
 const Reminders = lazy(() => import('./components/Reminders'));
+const TrialExpiredScreen = lazy(() => import('./components/TrialExpiredScreen'));
 
 // Function to apply settings from localStorage to the document
 const applyGlobalSettings = () => {
@@ -74,6 +75,24 @@ const applyGlobalSettings = () => {
     }
   } catch (e) {
     console.warn("Failed to apply global settings:", e);
+  }
+};
+
+// Trial duration in days
+const TRIAL_DURATION_DAYS = 14;
+
+/** Check whether the trial period has expired */
+const isTrialExpired = (): boolean => {
+  try {
+    const raw = localStorage.getItem('trial.startDate');
+    if (!raw) return false; // no start date yet – user hasn't registered
+    const startDate = new Date(JSON.parse(raw));
+    const now = new Date();
+    const diffMs = now.getTime() - startDate.getTime();
+    const diffDays = diffMs / (1000 * 60 * 60 * 24);
+    return diffDays >= TRIAL_DURATION_DAYS;
+  } catch {
+    return false; // if anything goes wrong, don't lock the user out
   }
 };
 
@@ -174,6 +193,11 @@ const App: React.FC = () => {
   // WelcomeScreen is NOT suspended now
   if (onboardingState === 'welcome') {
     return <WelcomeScreen onComplete={() => setOnboardingState('profileSetup')} />;
+  }
+
+  // Trial expiration gate – checked after onboarding so the welcome screen works
+  if (isTrialExpired()) {
+    return <Suspense fallback={<LoadingFallback />}><TrialExpiredScreen /></Suspense>;
   }
 
   if (onboardingState === 'profileSetup') {

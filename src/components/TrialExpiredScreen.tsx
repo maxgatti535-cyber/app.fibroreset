@@ -1,70 +1,41 @@
-import React, { useState } from 'react';
-import { Lock, AlertCircle } from 'lucide-react';
-import { unlockPremium } from './utils';
+import React from 'react';
 
-interface TrialExpiredScreenProps {
-    onUnlock: () => void;
-}
+const TrialExpiredScreen: React.FC = () => {
+  return (
+    <div className="min-h-screen flex flex-col justify-center items-center p-4 relative overflow-hidden bg-background">
+      {/* Decorative orbs */}
+      <div className="orb orb-purple w-48 h-48 -top-20 -right-20 opacity-25"></div>
+      <div className="orb orb-azure w-36 h-36 bottom-20 -left-16 opacity-20" style={{ animationDelay: '4s' }}></div>
 
-const TrialExpiredScreen: React.FC<TrialExpiredScreenProps> = ({ onUnlock }) => {
-    const [code, setCode] = useState('');
-    const [error, setError] = useState('');
-
-    const handleUnlock = () => {
-        if (unlockPremium(code)) {
-            onUnlock();
-        } else {
-            setError('Codice non valido. Controlla la tua email.');
-        }
-    };
-
-    return (
-        <div className="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center p-6 text-center font-sans">
-            <div className="max-w-md w-full">
-                <div className="mb-6 flex justify-center">
-                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
-                        <Lock className="text-gray-400 w-10 h-10" />
-                    </div>
-                </div>
-
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                    Periodo di prova terminato
-                </h1>
-
-                <p className="text-gray-600 mb-8">
-                    Per continuare a utilizzare l'applicazione, inserisci il codice di attivazione che hai ricevuto via email dopo l'acquisto.
-                </p>
-
-                <div className="space-y-4 w-full">
-                    <input
-                        type="text"
-                        value={code}
-                        onChange={(e) => setCode(e.target.value)}
-                        placeholder="Inserisci il tuo codice"
-                        className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandPrimary/20 text-center text-lg"
-                    />
-
-                    <button
-                        onClick={handleUnlock}
-                        className="w-full bg-brandPrimary text-white py-4 rounded-xl font-bold text-lg hover:bg-brandPrimaryDark transition-all active:scale-95"
-                    >
-                        Attiva Applicazione
-                    </button>
-
-                    {error && (
-                        <div className="text-red-500 text-sm flex items-center justify-center gap-1">
-                            <AlertCircle size={14} /> {error}
-                        </div>
-                    )}
-                </div>
-
-                <div className="mt-12 text-sm text-gray-500">
-                    Non hai ricevuto il codice? <br />
-                    Controlla lo spam o contatta il supporto.
-                </div>
-            </div>
+      <div className="glass-panel-strong p-7 rounded-3xl premium-shadow-elevated w-full max-w-md text-center relative z-10 animate-scale-in gradient-border">
+        <div className="w-20 h-20 mx-auto bg-gradient-to-br from-purple-500/20 to-violet-500/20 rounded-2xl flex items-center justify-center mb-6 border border-brandPrimary/20">
+          <svg className="w-10 h-10 text-brandPrimary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
         </div>
-    );
+
+        <h1 className="text-3xl font-extrabold gradient-text mb-3 font-serif leading-tight">
+          Periodo di prova<br/>terminato
+        </h1>
+        
+        <p className="text-[15px] text-textSecondary mb-6 leading-relaxed">
+          Speriamo che le ultime 2 settimane con <strong>Metodo RESET FIBRO™</strong> ti abbiano aiutato a sentirti meglio.
+        </p>
+
+        <div className="bg-brandPrimary/5 border border-brandPrimary/10 rounded-2xl p-4 mb-8 text-left">
+          <p className="text-sm text-textPrimary leading-relaxed">
+            Per continuare ad usare l'app, sblocca la versione completa o lasciaci una videorecensione raccontandoci i tuoi progressi!
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          <button className="w-full btn-primary text-base py-3.5 min-h-[52px]">
+            Sblocca Accesso
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default TrialExpiredScreen;
